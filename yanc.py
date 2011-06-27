@@ -1,27 +1,32 @@
+import re
+
 from nose.plugins import Plugin
 
 import termstyle
 
-    
-class ColorStreamProxy(object):
 
-    _color_map = {
-        "OK" : "green",
-        "ok" : "green",
-        "." : "green",
-        "FAILED" : "red",
-        "ERROR" : "red",
-        "E" : "red",
-        "FAILURE" : "yellow",
-        "F" : "yellow",
-        "SKIP" : "magenta",
-        "S" : "magenta",
-        "-" * 70 : "blue",
-        "=" * 70 : "blue",
+class ColorStreamProxy(object):
+    
+    _colors = {
+        "OK" : ["green", "ok", "."],
+        "ERROR" : ["red", "FAILED", "errors", "E"],
+        "FAILURE" : ["yellow", "F"],
+        "SKIP" : ["magenta", "S"],
+        "-" * 70 : ["blue", "=" * 70],
+        "testname" : ["cyan"],
         }
     
     def __init__(self, stream):
         self._stream = stream
+        self._color_map = {}
+        self._patten_map = {}
+        for key, labels in self._colors.items():
+            color = labels.pop(0)
+            labels.append(key)
+            for label in labels:
+                self._color_map[label] = color
+                if len(label) > 1:
+                    self._patten_map[label] = re.compile("%s=\d+" % label)
         
     def __getattr__(self, key):
         return getattr(self._stream, key)
@@ -30,14 +35,23 @@ class ColorStreamProxy(object):
         if string:
             if color is None:
                 color = self._color_map.get(string)
-            if color is None:
-                for key in self._color_map:
-                    if string.startswith(key + ":"):
-                        parts = string.split(":")
-                        return self._colorize(parts[0] + ":", self._color_map[key]) + ":".join(parts[1:])
-            else:
-                string = getattr(termstyle, color)(string)
-        return string
+                if color is None:
+                    for key in self._color_map:
+                        if string.startswith(key + ":"):
+                            # this is a test failure
+                            segments = string.split(":")
+                            return self._colorize(segments[0] + ":",
+                                                  self._color_map[key]) \
+                                + self._colorize(":".join(segments[1:]),
+                                                 self._color_map["testname"])
+                    for key, key_color in self._color_map.items():
+                        pattern = self._patten_map.get(key)
+                        if pattern is not None:
+                            for match in pattern.findall(string):
+                                string = string.replace(match, self._colorize(match, key_color))
+            if color is not None:
+                string = termstyle.bold(getattr(termstyle, color)(string))
+            return string
     
     def write(self, string):
         self._stream.write(self._colorize(string))
