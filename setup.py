@@ -16,6 +16,7 @@ setup(name="yanc",
       author="Ischium",
       author_email="support@ischium.net",
       url="https://github.com/ischium/yanc",
+      install_requires=("termstyle",),
       py_modules=("yanc",),
       entry_points={
           "nose.plugins" : ("yanc=yanc:YANC",),
