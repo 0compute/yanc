@@ -8,21 +8,18 @@ import termstyle
 class ColorStreamProxy(object):
     
     _colors = {
-        "OK" : ["green", "ok", "."],
-        "ERROR" : ["red", "FAILED", "errors", "E"],
-        "FAILURE" : ["yellow", "F"],
-        "SKIP" : ["magenta", "S"],
-        "-" * 70 : ["blue", "=" * 70],
-        "testname" : ["cyan"],
+        "green" : ("OK", "ok", "."),
+        "red" : ("ERROR", "FAILED", "errors", "E"),
+        "yellow" : ("FAILURE", "FAIL", "failures", "F"),
+        "magenta" : ("SKIP", "S"),
+        "blue" : ("-" * 70, "=" * 70),
         }
     
     def __init__(self, stream):
         self._stream = stream
         self._color_map = {}
         self._patten_map = {}
-        for key, labels in self._colors.items():
-            color = labels.pop(0)
-            labels.append(key)
+        for color, labels in self._colors.items():
             for label in labels:
                 self._color_map[label] = color
                 if len(label) > 1:
