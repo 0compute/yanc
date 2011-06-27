@@ -2,10 +2,10 @@ import re
 
 from nose.plugins import Plugin
 
-import termstyle
+import termcolor
 
 
-class ColorStreamProxy(object):
+class ColorStream(object):
     
     _colors = {
         "green" : ("OK", "ok", "."),
@@ -89,9 +89,8 @@ class YANC(Plugin):
         
     def begin(self):
         if self.color:
-            self.conf.stream = ColorStreamProxy(self.conf.stream)
+            self.conf.stream = ColorStream(self.conf.stream)
     
     def finalize(self, result):
         if self.color:
             self.conf.stream = self.conf.stream._stream
-    
