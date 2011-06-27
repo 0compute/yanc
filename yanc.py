@@ -47,7 +47,7 @@ class ColorStreamProxy(object):
 
     
 class YANC(Plugin):
-    """Yet another nose colorer."""
+    """Yet another nose colorer"""
     
     name = "yanc"
     
