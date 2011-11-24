@@ -16,7 +16,8 @@ setup(name="yanc",
       author="Ischium",
       author_email="support@ischium.net",
       url="https://github.com/ischium/yanc",
-      install_requires=("termcolor",),
+      # pegged to this version of termcolor as the next (1.1.0) breaks on py2.5
+      install_requires=("termcolor==1.0.1",),
       py_modules=("yanc",),
       entry_points={
           "nose.plugins" : ("yanc=yanc:YANC",),
