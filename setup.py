@@ -8,7 +8,7 @@ README = open(os.path.join(os.path.dirname(__file__), "README.rst")).read()
 
 
 setup(name="yanc",
-      version="0.2",
+      version="0.2.1",
       description="Yet another nose colorer",
       long_description=README,
       license="MIT",
