@@ -88,7 +88,8 @@ class YANC(Plugin):
             setattr(self, name, getattr(options, name))
         self.color = self.yanc_color != "off" \
                          and (self.yanc_color == "on" \
-                             or (hasattr(self.conf.stream, "isatty") \
+                             or (hasattr(self.conf, "stream")
+                                 and hasattr(self.conf.stream, "isatty") \
                                  and self.conf.stream.isatty()))
 
     def begin(self):
