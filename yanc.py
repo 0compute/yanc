@@ -94,8 +94,11 @@ class YANC(Plugin):
 
     def begin(self):
         if self.color:
-            self.conf.stream = ColorStream(self.conf.stream)
+            import sys
+            if hasattr(self.conf, "stream"):
+                self.conf.stream = ColorStream(self.conf.stream)
 
     def finalize(self, result):
         if self.color:
-            self.conf.stream = self.conf.stream._stream
+            if hasattr(self.conf, "stream") and hasattr(self.conf.stream, "_stream"):
+                self.conf.stream = self.conf.stream._stream
