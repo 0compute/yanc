@@ -6,6 +6,14 @@ from setuptools import setup
 
 README = open(os.path.join(os.path.dirname(__file__), "README.rst")).read()
 
+# under test we do not want the nose entry point installed because it screws up
+# coverage since the package is imported too early
+if "YANC_NO_NOSE" in os.environ:
+    entry_points = None
+else:
+    entry_points = {
+        "nose.plugins": ("yanc=yanc.yancplugin:YancPlugin",),
+        }
 
 setup(name="yanc",
       version="0.2.3",
@@ -16,10 +24,6 @@ setup(name="yanc",
       author="Arthur Noel",
       author_email="arthur@0compute.net",
       url="https://github.com/0compute/yanc",
-      # pegged to this version of termcolor as the next (1.1.0) breaks on py2.5
-      install_requires=("termcolor==1.0.1",),
-      py_modules=("yanc",),
-      entry_points={
-          "nose.plugins" : ("yanc=yanc:YANC",),
-          },
+      packages=("yanc",),
+      entry_points=entry_points,
       )

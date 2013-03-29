@@ -1,3 +1,7 @@
 *.pyc
-dist/
-yanc.egg-info/
+*.egg-info/
+.build/
+.dist/
+.lib/
+.venv/
+.coverage
