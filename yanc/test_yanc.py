@@ -15,10 +15,19 @@
 # Yanc. If not, see <http://www.gnu.org/licenses/>.
 
 import difflib
+
 import re
 import unittest
 
 from nose.plugins import PluginTester
+
+try:
+    import unittest2
+except ImportError:
+    pass
+else:
+    import sys
+    sys.modules["unittest"] = unittest2
 
 from yanc.yancplugin import YancPlugin
 
@@ -38,8 +47,8 @@ FAIL: runTest (yanc.test_yanc.TC2)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
   File "test_yanc.py", line 1, in runTest
-    self.fail()
-AssertionError: None
+    self.assertTrue(False)
+AssertionError
 
 ----------------------------------------------------------------------
 Ran 2 tests in 0.001s
@@ -62,8 +71,8 @@ ValueError: xxx
 \x1b[34m----------------------------------------------------------------------\x1b[0m
 Traceback (most recent call last):
   File "test_yanc.py", line 1, in runTest
-    self.fail()
-AssertionError: None
+    self.assertTrue(False)
+AssertionError
 
 \x1b[34m----------------------------------------------------------------------\x1b[0m
 Ran 2 tests in 0.001s
@@ -73,6 +82,7 @@ Ran 2 tests in 0.001s
 
 FILE_PATTERN = re.compile('File "[^"]+", line \d+')
 TIME_PATTEN = re.compile("\d+\.\d+s")
+ASSERTIONERROR_PATTERN = re.compile("AssertionError.*")
 
 
 class _TestYanc(PluginTester, unittest.TestCase):
@@ -91,13 +101,14 @@ class _TestYanc(PluginTester, unittest.TestCase):
 
         class TC2(unittest.TestCase):
             def runTest(self):
-                self.fail()
+                self.assertTrue(False)
 
         return unittest.TestSuite([TC1(), TC2()])
 
     def test_yanc(self):
         exc_str = FILE_PATTERN.sub('File "test_yanc.py", line 1', str(self.output))
         exc_str = TIME_PATTEN.sub("0.001s", exc_str)
+        exc_str = ASSERTIONERROR_PATTERN.sub("AssertionError", exc_str)
         if self.exc_str != exc_str:
             diff = difflib.unified_diff(self.exc_str.splitlines(True),
                                         exc_str.splitlines(True),
