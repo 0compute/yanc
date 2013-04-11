@@ -3,9 +3,8 @@ env:
     - PYTHON=python2.7
     - PYTHON=python2.6
     - PYTHON=python2.5
-    - PYTHON=python3.1
-    - PYTHON=python3.2
-    - PYTHON=python3.3
+    #- PYTHON=python3.2
+    #- PYTHON=python3.3
     - PYTHON=jython
 before_install:
     - export PIP_DOWNLOAD_CACHE=$(mktemp -d)
