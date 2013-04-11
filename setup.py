@@ -32,7 +32,7 @@ else:
         }
 
 setup(name="yanc",
-      version="0.2.3",
+      version="0.2.4",
       description="Yet another nose colorer",
       long_description=README,
       license="GPL",
