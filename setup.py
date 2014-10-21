@@ -49,7 +49,7 @@ test.test = NoseTestCommand
 
 setup(
     name="yanc",
-    version="0.2.4",
+    version="0.3.0",
     description="Yet another nose colorer",
     long_description=open(
         os.path.join(os.path.dirname(__file__), "README.rst")).read(),
