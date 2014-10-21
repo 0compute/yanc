@@ -60,9 +60,6 @@ class ColorStream(object):
                             label = self._colorize(segments[0] + ":",
                                                    self._color_map[key])
                             desc = ":".join(segments[1:])
-                            if desc.startswith(" Failure: "):
-                                desc = self._color_wrap(desc,
-                                                        self._color_map[key])
                             return label + desc
                     for key, key_color in self._color_map.items():
                         # looking for label=number in the summary

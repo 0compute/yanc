@@ -25,7 +25,7 @@ try:
     import unittest2
 except ImportError:
     pass
-else:
+else: # pragma: no cover - unittest shim for those that don't have it
     import sys
     sys.modules["unittest"] = unittest2
 
@@ -110,12 +110,11 @@ class _TestYanc(PluginTester, unittest.TestCase):
                                    str(self.output))
         exc_str = TIME_PATTEN.sub("0.001s", exc_str)
         exc_str = ASSERTIONERROR_PATTERN.sub("AssertionError", exc_str)
-        if self.exc_str != exc_str:  # pragma: no cover
+        if self.exc_str != exc_str:  # pragma: no cover - only hit on fail
             diff = difflib.unified_diff(self.exc_str.splitlines(True),
                                         exc_str.splitlines(True),
                                         "expected", "actual")
-            print("".join(diff))
-            self.fail()
+            self.fail("".join(diff))
 
 
 class TestYancColorAuto(_TestYanc):
