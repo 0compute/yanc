@@ -40,7 +40,7 @@ class ColorStream(object):
             for label in labels:
                 self._color_map[label] = color
                 if len(label) > 1:
-                    self._patten_map[label] = re.compile("%s=\d+" % label)
+                    self._patten_map[label] = re.compile(r"%s=\d+" % label)
 
     def __getattr__(self, key):
         return getattr(self._stream, key)

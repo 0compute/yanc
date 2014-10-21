@@ -106,10 +106,11 @@ class _TestYanc(PluginTester, unittest.TestCase):
         return unittest.TestSuite([TC1(), TC2()])
 
     def test_yanc(self):
-        exc_str = FILE_PATTERN.sub('File "test_yanc.py", line 1', str(self.output))
+        exc_str = FILE_PATTERN.sub('File "test_yanc.py", line 1',
+                                   str(self.output))
         exc_str = TIME_PATTEN.sub("0.001s", exc_str)
         exc_str = ASSERTIONERROR_PATTERN.sub("AssertionError", exc_str)
-        if self.exc_str != exc_str:
+        if self.exc_str != exc_str:  # pragma: no cover
             diff = difflib.unified_diff(self.exc_str.splitlines(True),
                                         exc_str.splitlines(True),
                                         "expected", "actual")

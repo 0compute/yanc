@@ -30,17 +30,17 @@ class YancPlugin(Plugin):
 
     def options(self, parser, env):
         super(YancPlugin, self).options(parser, env)
-        for name, help, action in self._options:
+        for name, doc, action in self._options:
             env_opt = "NOSE_YANC_%s" % name.upper()
             parser.add_option("--yanc-%s" % name.replace("_", "-"),
                               action=action,
                               dest="yanc_%s" % name,
                               default=env.get(env_opt),
-                              help=help % env_opt)
+                              help=doc % env_opt)
 
     def configure(self, options, conf):
         super(YancPlugin, self).configure(options, conf)
-        for name, help, dummy in self._options:
+        for name, dummy1, dummy2 in self._options:
             name = "yanc_%s" % name
             setattr(self, name, getattr(options, name))
         self.color = self.yanc_color != "off" \
