@@ -15,8 +15,21 @@
 # Yanc. If not, see <http://www.gnu.org/licenses/>.
 
 from nose.plugins import Plugin
+from nose.result import TextTestResult
 
 from yanc.colorstream import ColorStream
+
+DO_YANC = False
+
+
+# monkey patch TextTestResult.__init__ to wrap the out stream with ColorStream
+def testresult_init(self, *args, **kwargs):
+    self._real_init(*args, **kwargs)
+    if DO_YANC:
+        self.stream = ColorStream(self.stream)
+
+TextTestResult._real_init = TextTestResult.__init__
+TextTestResult.__init__ = testresult_init
 
 
 class YancPlugin(Plugin):
@@ -43,16 +56,10 @@ class YancPlugin(Plugin):
         for name, dummy1, dummy2 in self._options:
             name = "yanc_%s" % name
             setattr(self, name, getattr(options, name))
-        self.color = self.yanc_color != "off" \
-            and (self.yanc_color == "on"
-                 or (hasattr(self.conf, "stream")
-                     and hasattr(self.conf.stream, "isatty")
-                     and self.conf.stream.isatty()))
-
-    def begin(self):
-        if self.color:
-            self.conf.stream = ColorStream(self.conf.stream)
-
-    def finalize(self, result):
-        if self.color:
-            self.conf.stream = self.conf.stream._stream
+        # multiprocess plugin workers will not have a stream on conf
+        if hasattr(self.conf, "stream"):
+            global DO_YANC
+            DO_YANC = self.yanc_color != "off" \
+                and (self.yanc_color == "on"
+                     or (hasattr(conf.stream, "isatty")
+                         and conf.stream.isatty()))
