@@ -1,4 +1,4 @@
-# Copyright 2011-2013 Arthur Noel
+# Copyright 2011-2014 Arthur Noel
 #
 # This file is part of Yanc.
 #
