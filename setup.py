@@ -19,27 +19,51 @@
 import os
 
 from setuptools import setup
+from setuptools.command import test
 
-README = open(os.path.join(os.path.dirname(__file__), "README.rst")).read()
+# monkey patch test command to make nose work with `setup.py test`
+# see: http://fgimian.github.io/blog/2014/04/27/running-nose-tests-with-plugins-using-the-python-setuptools-test-command/
+test._test = test.test
 
-# under test we do not want the nose entry point installed because it screws up
-# coverage since the package is imported too early
-if "YANC_NO_NOSE" in os.environ:
-    entry_points = None
-else:
+
+class NoseTestCommand(test._test):
+
+    user_options = test._test.user_options + [
+        ("args=", "a", "Arguments to pass to nose"),
+    ]
+
+    def initialize_options(self):
+        test._test.initialize_options(self)
+        self.args = None
+
+    def finalize_options(self):
+        test._test.finalize_options(self)
+        self.args = self.args and self.args.strip().split() or []
+        self.test_suite = True
+
+    def run_tests(self):
+        import nose
+        nose.run_exit(argv=["nosetests"] + self.args)
+
+test.test = NoseTestCommand
+
+setup(
+    name="yanc",
+    version="0.2.4",
+    description="Yet another nose colorer",
+    long_description=open(
+        os.path.join(os.path.dirname(__file__), "README.rst")).read(),
+    license="GPL",
+    keywords="nose color",
+    author="Arthur Noel",
+    author_email="arthur@0compute.net",
+    url="https://github.com/0compute/yanc",
+    packages=("yanc",),
+    tests_require=(
+        "nose",
+    ),
+    test_suite="nose.collector",
     entry_points = {
         "nose.plugins": ("yanc=yanc.yancplugin:YancPlugin",),
-        }
-
-setup(name="yanc",
-      version="0.2.4",
-      description="Yet another nose colorer",
-      long_description=README,
-      license="GPL",
-      keywords="nose color",
-      author="Arthur Noel",
-      author_email="arthur@0compute.net",
-      url="https://github.com/0compute/yanc",
-      packages=("yanc",),
-      entry_points=entry_points,
-      )
+    },
+)

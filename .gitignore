@@ -1,7 +1,6 @@
 *.pyc
-*.egg-info/
-.build/
-.dist/
-.lib/
-.venv/
-.coverage
+/*.egg-info/
+/.build/
+/.makeenv*
+/.venv/
+/.coverage.*

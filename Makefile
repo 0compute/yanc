@@ -14,10 +14,15 @@
 # You should have received a copy of the GNU General Public License along with
 # Yanc. If not, see <http://www.gnu.org/licenses/>.
 
-MAKEENV_MODULES=*
-include .makeenv/makeenv.mak
-
-# this is used in setup.py to indicate that the nose entry point should not be
-# installed - if it is installed for test it screws up coverage because the
-# yanc module gets imported too early
-export YANC_NO_NOSE = 1
+MAKEENV_VERSION = master
+MAKEENV_ROOT = .makeenv-$(MAKEENV_VERSION)
+MAKEENV_CORE = $(MAKEENV_ROOT)/makeenv.mak
+ifeq ($(wildcard $(MAKEENV_CORE)),)
+CURL ?= curl --fail --location
+_BOOTSTRAP = mkdir -p $(MAKEENV_ROOT) && $(CURL) \
+	https://github.com/0compute/makeenv/archive/$(MAKEENV_VERSION).tar.gz \
+	| tar -C $(MAKEENV_ROOT) --strip-components=1 -xz
+$(if $(shell (echo "$(_BOOTSTRAP)" && $(_BOOTSTRAP)) 1>&2 || echo x), \
+	$(error Could not bootstrap makeenv))
+endif
+include $(MAKEENV_CORE)
