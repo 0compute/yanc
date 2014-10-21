@@ -70,7 +70,7 @@ setup(
         "Development Status :: 4 - Beta",
         "Environment :: Console",
         "Intended Audience :: Developers",
-        "License :: OSI Approved :: MIT License",
+        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Operating System :: POSIX",
         "Programming Language :: Python",
         "Programming Language :: Python :: 2",
