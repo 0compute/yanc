@@ -1,4 +1,0 @@
-nose == 1.1.2
-coverage == 3.5.3
-
-# vim: set ft=conf:
