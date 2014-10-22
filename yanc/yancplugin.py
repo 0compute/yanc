@@ -36,11 +36,12 @@ class YancPlugin(Plugin):
 
     def configure(self, options, conf):
         super(YancPlugin, self).configure(options, conf)
-        if options.yanc_color is None and not conf.worker \
+        if options.yanc_color is None \
                 and hasattr(conf.stream, "isatty") and conf.stream.isatty():
-            # if color is not set and we're not a worker then set color on
-            # the basis of the stream's tty status - this is set on options
-            # so that the value is propagated to multiprocess workers
+            # if color is not set then set color on the basis of the stream's
+            # tty status - this is set on options so that the value is
+            # propagated to multiprocess workers meaning that the option is
+            # never None when conf.worker is True
             options.yanc_color = "on"
         self.color = options.yanc_color != "off"
 
@@ -49,9 +50,7 @@ class YancPlugin(Plugin):
         # when run in parallel, this method is called at the top level which
         # deals with the test summary information but the workers need
         # prepareTestResult to have their output colored
-        if self.enabled and self.color:
-            stream = ColorStream(stream)
-        return stream
+        return self.color and ColorStream(stream) or stream
 
     def prepareTestResult(self, result):
         if not isinstance(result.stream, ColorStream):
