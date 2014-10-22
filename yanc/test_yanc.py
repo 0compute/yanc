@@ -25,15 +25,14 @@ try:
     import unittest2
 except ImportError:
     pass
-else: # pragma: no cover - unittest shim for those that don't have it
+else:  # pragma: no cover - unittest shim for those that don't have it
     import sys
     sys.modules["unittest"] = unittest2
 
 from yanc.yancplugin import YancPlugin
 
 
-EXCEPTION_PLAIN = \
-"""EF
+EXCEPTION_PLAIN = """EF
 ======================================================================
 ERROR: runTest (yanc.test_yanc.TC1)
 ----------------------------------------------------------------------
@@ -56,8 +55,7 @@ Ran 2 tests in 0.001s
 FAILED (errors=1, failures=1)
 """
 
-EXCEPTION_COLOR = \
-"""\x1b[31mE\x1b[0m\x1b[33mF\x1b[0m
+EXCEPTION_COLOR = """\x1b[31mE\x1b[0m\x1b[33mF\x1b[0m
 \x1b[34m======================================================================\x1b[0m
 \x1b[31mERROR:\x1b[0m runTest (yanc.test_yanc.TC1)
 \x1b[34m----------------------------------------------------------------------\x1b[0m
