@@ -15,21 +15,8 @@
 # Yanc. If not, see <http://www.gnu.org/licenses/>.
 
 from nose.plugins import Plugin
-from nose.result import TextTestResult
 
 from yanc.colorstream import ColorStream
-
-DO_YANC = False
-
-
-# monkey patch TextTestResult.__init__ to wrap the out stream with ColorStream
-def testresult_init(self, *args, **kwargs):
-    self._real_init(*args, **kwargs)
-    if DO_YANC:
-        self.stream = ColorStream(self.stream)
-
-TextTestResult._real_init = TextTestResult.__init__
-TextTestResult.__init__ = testresult_init
 
 
 class YancPlugin(Plugin):
@@ -37,29 +24,35 @@ class YancPlugin(Plugin):
 
     name = "yanc"
 
-    _options = (
-        ("color", "YANC color override - one of on,off [%s]", "store"),
-    )
-
     def options(self, parser, env):
         super(YancPlugin, self).options(parser, env)
-        for name, doc, action in self._options:
-            env_opt = "NOSE_YANC_%s" % name.upper()
-            parser.add_option("--yanc-%s" % name.replace("_", "-"),
-                              action=action,
-                              dest="yanc_%s" % name,
-                              default=env.get(env_opt),
-                              help=doc % env_opt)
+        parser.add_option(
+            "--yanc-color",
+            action="store",
+            dest="yanc_color",
+            default=env.get("NOSE_YANC_COLOR"),
+            help="YANC color override - one of on,off [NOSE_YANC_COLOR]",
+        )
 
     def configure(self, options, conf):
         super(YancPlugin, self).configure(options, conf)
-        for name, dummy1, dummy2 in self._options:
-            name = "yanc_%s" % name
-            setattr(self, name, getattr(options, name))
-        # multiprocess plugin workers will not have a stream on conf
-        if hasattr(self.conf, "stream"):
-            global DO_YANC
-            DO_YANC = self.yanc_color != "off" \
-                and (self.yanc_color == "on"
-                     or (hasattr(conf.stream, "isatty")
-                         and conf.stream.isatty()))
+        if options.yanc_color is None and not conf.worker \
+                and hasattr(conf.stream, "isatty") and conf.stream.isatty():
+            # if color is not set and we're not a worker then set color on
+            # the basis of the stream's tty status - this is set on options
+            # so that the value is propagated to multiprocess workers
+            options.yanc_color = "on"
+        self.color = options.yanc_color != "off"
+
+    def setOutputStream(self, stream):
+        # when run in series, this method gets called once and that is enough,
+        # when run in parallel, this method is called at the top level which
+        # deals with the test summary information but the workers need
+        # prepareTestResult to have their output colored
+        if self.enabled and self.color:
+            stream = ColorStream(stream)
+        return stream
+
+    def prepareTestResult(self, result):
+        if not isinstance(result.stream, ColorStream):
+            result.stream = self.setOutputStream(result.stream)
