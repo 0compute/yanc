@@ -59,14 +59,14 @@ setup(
     author_email="arthur@0compute.net",
     url="https://github.com/0compute/yanc",
     packages=("yanc",),
-    tests_require=(
+    tests_require=[
         "nose",
-    ),
+    ],
     test_suite="nose.collector",
     entry_points = {
         "nose.plugins": ("yanc=yanc.yancplugin:YancPlugin",),
     },
-    classifiers = (
+    classifiers = [
         "Development Status :: 4 - Beta",
         "Environment :: Console",
         "Intended Audience :: Developers",
@@ -82,5 +82,5 @@ setup(
         "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: Implementation :: CPython",
         "Topic :: Software Development :: Testing",
-    ),
+    ],
 )
