@@ -36,12 +36,13 @@ class YancPlugin(Plugin):
 
     def configure(self, options, conf):
         super(YancPlugin, self).configure(options, conf)
-        if options.yanc_color is None \
+        if options.yanc_color is None and not conf.worker \
                 and hasattr(conf.stream, "isatty") and conf.stream.isatty():
             # if color is not set then set color on the basis of the stream's
             # tty status - this is set on options so that the value is
             # propagated to multiprocess workers meaning that the option is
             # never None when conf.worker is True
+            # XXX: apparently not, see #6
             options.yanc_color = "on"
         self.color = options.yanc_color != "off"
 
