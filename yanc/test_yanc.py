@@ -116,7 +116,7 @@ class _TestYanc(PluginTester, unittest.TestCase):
 
 
 class TestYancColorAuto(_TestYanc):
-    args = ('--yanc-color=on',)
+    args = ()
 
 
 class TestYancColorOn(_TestYanc):
