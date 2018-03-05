@@ -21,6 +21,6 @@ To enable the plugin pass `--with-yanc` to `nosetests`.
     :target: https://pypi.python.org/pypi/yanc/
     :alt: Latest Version
 
-.. image:: https://pypip.in/license/yanc/badge.png
+.. image:: https://img.shields.io/pypi/l/yanc.svg
     :target: https://github.com/0compute/yanc/blob/master/LICENSE
     :alt: License
